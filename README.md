@@ -31,7 +31,7 @@ Asegúrate de tener instalados:
 1. **Clonar el repositorio:**
 
    ```bash
-   git clone https://github.com/edwynnJSK/pico-y-placa-backend
+   git clone https://github.com/edwynnJSK/pico-y-placa-backend.git
    cd pico-y-placa-backend
    ```
 
