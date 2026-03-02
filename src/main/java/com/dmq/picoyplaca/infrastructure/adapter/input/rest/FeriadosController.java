@@ -2,6 +2,8 @@ package com.dmq.picoyplaca.infrastructure.adapter.input.rest;
 
 import com.dmq.picoyplaca.infrastructure.adapter.output.persistence.FeriadoEntity;
 import com.dmq.picoyplaca.infrastructure.adapter.output.persistence.FeriadoJpaRepository;
+import com.dmq.picoyplaca.infrastructure.adapter.output.persistence.FeriadoRepositoryAdapter;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,9 +27,12 @@ import java.util.List;
 public class FeriadosController {
 
     private final FeriadoJpaRepository feriadoJpaRepository;
+    private final FeriadoRepositoryAdapter feriadoRepositoryAdapter;
 
-    public FeriadosController(FeriadoJpaRepository feriadoJpaRepository) {
+    public FeriadosController(FeriadoJpaRepository feriadoJpaRepository,
+            FeriadoRepositoryAdapter feriadoRepositoryAdapter) {
         this.feriadoJpaRepository = feriadoJpaRepository;
+        this.feriadoRepositoryAdapter = feriadoRepositoryAdapter;
     }
 
     @GetMapping
@@ -47,6 +52,7 @@ public class FeriadosController {
     public ResponseEntity<FeriadoResponse> crear(@Valid @RequestBody FeriadoRequest request) {
         FeriadoEntity entidad = new FeriadoEntity(request.fecha(), request.nombre(), request.tipo());
         FeriadoEntity guardada = feriadoJpaRepository.save(entidad);
+        feriadoRepositoryAdapter.evictCache();
         return ResponseEntity.status(HttpStatus.CREATED).body(FeriadoResponse.de(guardada));
     }
 
@@ -62,6 +68,7 @@ public class FeriadosController {
         entidad.setNombre(request.nombre());
         entidad.setTipo(request.tipo());
         FeriadoEntity guardada = feriadoJpaRepository.save(entidad);
+        feriadoRepositoryAdapter.evictCache();
         return ResponseEntity.ok(FeriadoResponse.de(guardada));
     }
 
@@ -73,6 +80,7 @@ public class FeriadosController {
                         "Feriado no encontrado con id: " + id));
         entidad.setActivo(false);
         feriadoJpaRepository.save(entidad);
+        feriadoRepositoryAdapter.evictCache();
         return ResponseEntity.noContent().build();
     }
 

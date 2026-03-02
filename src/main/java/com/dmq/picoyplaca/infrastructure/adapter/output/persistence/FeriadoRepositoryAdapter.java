@@ -1,6 +1,7 @@
 package com.dmq.picoyplaca.infrastructure.adapter.output.persistence;
 
 import com.dmq.picoyplaca.domain.port.output.FeriadoRepositoryPort;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -27,5 +28,12 @@ public class FeriadoRepositoryAdapter implements FeriadoRepositoryPort {
     @Cacheable(value = "feriados", key = "#fecha")
     public boolean esFeriado(LocalDate fecha) {
         return jpaRepository.existsByFechaAndActivoTrue(fecha);
+    }
+
+    /**
+     * Limpiar el cache de feriados despues de operaciones de modificación
+     */
+    @CacheEvict(value = "feriados", allEntries = true)
+    public void evictCache() {
     }
 }
