@@ -7,12 +7,13 @@ import com.dmq.picoyplaca.domain.port.output.FeriadoRepositoryPort;
 import com.dmq.picoyplaca.domain.port.output.ReglaRestriccionRepositoryPort;
 import com.dmq.picoyplaca.domain.port.output.RelojPort;
 import com.dmq.picoyplaca.domain.service.ValidarCirculacionService;
+import com.dmq.picoyplaca.bdd.config.CucumberSpringConfiguration;
 import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Entonces;
 import io.cucumber.spring.CucumberContextConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.time.*;
 import java.util.Optional;
@@ -22,26 +23,23 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @CucumberContextConfiguration
-@SpringBootTest
+@ContextConfiguration(classes = CucumberSpringConfiguration.class)
 public class CirculacionSteps {
 
-    private final ValidarCirculacionService service;
+    @Autowired
+    private ValidarCirculacionService service;
 
-    @MockitoBean
+    @Autowired
     private FeriadoRepositoryPort feriadoRepository;
-    @MockitoBean
+    @Autowired
     private ReglaRestriccionRepositoryPort reglaRepository;
-    @MockitoBean
+    @Autowired
     private RelojPort reloj;
 
     private String placaInput;
     private LocalDateTime fechaHoraInput;
     private ResultadoCirculacion resultado;
     private Exception errorCapturado;
-
-    public CirculacionSteps(ValidarCirculacionService service) {
-        this.service = service;
-    }
 
     @Dado("que la placa es {string}")
     public void queLaPlacaEs(String placa) {
